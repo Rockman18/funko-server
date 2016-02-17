@@ -22,6 +22,7 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
     protected HtmlParser htmlParser;
     protected FunkoObject parent;
     
+    /*
     Pattern pattern = Pattern.compile( "^((<br>)?\\#([0-9]+))?(\n|\r)*" + 
 	    				"((<br>)?Released ([a-zA-Z ]*[0-9]{4}))?(\n|\r)*" +
 	    				"((<br>)?Excl. to (.*))?(\n|\r)*" +
@@ -30,6 +31,16 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 	    				"((<br>)?Rarity: 1/([0-9]+))?(\n|\r)*" +
 	    				"((<br>)?((V|v)aulted))?(\n|\r)*" +
 	    				"((<br>)?((R|r)etired))?(\n|\r)*");
+	*/
+
+    Pattern pattern = Pattern.compile( "^(\\#([0-9]+)\n<br>)?" +
+			"(Released ([a-zA-Z ]*[0-9]{4})\n<br>)?" +
+			"(Excl. to (.*)\n<br>)?" +
+			"(Edition Size: ([0-9,]+)\n<br>)?" +
+			"(Due ([a-zA-Z ]*[0-9]{4})\n<br>)?" +
+			"(Rarity: 1/([0-9]+)\n<br>)?" +
+			"(((V|v)aulted)\n<br>)?" +
+			"(((R|r)etired)\n<br>)?");
 
     public void setHtmlParser(HtmlParser htmlParser) {
 	this.htmlParser = htmlParser;
@@ -75,14 +86,14 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 	    Matcher matcher = pattern.matcher(textContainer.html());
 	    if (matcher.find())
 	    {
-		logger.debug("3 # : {}", matcher.group(3));
-		logger.debug("7 Released : {}", matcher.group(7));
-		logger.debug("11 Excl. to : {}", matcher.group(11));
-		logger.debug("15 Edition size : {}", matcher.group(15));
-		logger.debug("19 Due : {}", matcher.group(19));
-		logger.debug("23 Rarity : {}", matcher.group(23));
-		logger.debug("27 Vaulted : {}", matcher.group(27));
-		logger.debug("32 Retired : {}", matcher.group(32));
+		logger.debug("2 # : {}", matcher.group(2));
+		logger.debug("4 Released : {}", matcher.group(4));
+		logger.debug("6 Excl. to : {}", matcher.group(6));
+		logger.debug("8 Edition size : {}", matcher.group(8));
+		logger.debug("10 Due : {}", matcher.group(10));
+		logger.debug("12 Rarity : {}", matcher.group(12));
+		logger.debug("14 Vaulted : {}", matcher.group(14));
+		logger.debug("16 Retired : {}", matcher.group(16));
 		
 	    } else {
 		logger.debug("******************************");
