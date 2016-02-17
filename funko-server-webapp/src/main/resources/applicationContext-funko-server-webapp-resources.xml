@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		
+
+	<!-- configuration des fichiers de properties -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+	
+	<bean 
+		class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="searchContextAttributes" value="true" />
+		<property name="contextOverride" value="true" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:internal_services.properties</value>
+				<value>classpath:services.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- funko datasource -->
+<!-- 	<bean id="funkoDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="${funko.server.jdbc.url}"></property>
+     	<property name="username" value="${funko.server.jdbc.username}"></property>
+      	<property name="password" value="${funko.server.jdbc.password}"></property>  
+	</bean>
+	
+	<bean id="funkoJpaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+				<prop key="hibernate.show_sql">${dev.funko.server.jdbc.show.sql}</prop>
+				<prop key="hibernate.query.jpaql_strict_compliance">false</prop>
+				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+				<prop key="hibernate.default_schema">${funko.server.jdbc.schema}</prop>
+			</props>
+		</property>
+	</bean>
+-->
+</beans>

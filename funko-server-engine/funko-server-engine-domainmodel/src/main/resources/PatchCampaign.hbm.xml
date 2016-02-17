@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.PatchCampaign" table="patch_campaign" optimistic-lock="version">
+        <composite-id name="id" class="com.thales.services.cloudomc.pms.server.api.domainmodel.PatchCampaignId">
+            <key-property name="idPatch" type="int">
+                <column name="id_patch" />
+            </key-property>
+            <key-property name="idCampaign" type="int">
+                <column name="id_campaign" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="campaign" class="com.thales.services.cloudomc.pms.server.api.domainmodel.campaign.Campaign" update="false" insert="false" fetch="select">
+            <column name="id_campaign" not-null="true" />
+        </many-to-one>
+        <many-to-one name="patch" class="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Patch" update="false" insert="false" fetch="select">
+            <column name="id_patch" not-null="true" />
+        </many-to-one>
+        <property name="allowed" type="java.lang.Boolean">
+            <column name="allowed" />
+        </property>
+    </class>
+</hibernate-mapping>

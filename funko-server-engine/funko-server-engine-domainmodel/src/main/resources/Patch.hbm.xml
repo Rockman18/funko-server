@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Patch" table="patch" optimistic-lock="version">
+        <id name="idPatch" type="int">
+            <column name="id_patch" />
+            <generator class="sequence">
+            	<param name="sequence">public.patch_id_patch_seq</param>
+            </generator>
+        </id>
+        <many-to-one name="tool" class="com.thales.services.cloudomc.pms.server.api.domainmodel.Tool" fetch="select">
+            <column name="id_tool" />
+        </many-to-one>
+        <property name="nameUptool" type="string">
+            <column name="name_uptool" />
+        </property>
+        <property name="descriptionPatch" type="string">
+            <column name="description_patch" length="8000" />
+        </property>
+        <property name="releaseDatePatch" type="date">
+            <column name="release_date_patch" length="13" />
+        </property>
+        <property name="idUptool" type="string">
+            <column name="id_uptool" />
+        </property>
+        <property name="statusPatch" type="string">
+            <column name="status_patch" length="25" />
+        </property>
+        <property name="statusUptoolPatch" type="string">
+            <column name="status_uptool_patch" length="25" />
+        </property>
+        <set name="products" table="product_patch" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_patch" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Product">
+                <column name="id_product" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="patchCampaigns" table="patch_campaign" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_patch" not-null="true" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.PatchCampaign" />
+        </set>
+        <set name="patchGroups" table="patch_group" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_patch" not-null="true" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.PatchGroup" />
+        </set>
+    </class>
+</hibernate-mapping>

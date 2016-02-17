@@ -1,0 +1,120 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!--
+		###################
+		### Coordinates ###
+		###################
+	-->
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>funko-server-webapp</artifactId>
+	<packaging>war</packaging>
+	<parent>
+		<groupId>fr.rockman18.funko.server</groupId>
+		<artifactId>funko-server-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<!--
+		####################
+		### Informations ###
+		####################
+	-->
+	<name>Funko Server Webapp</name>
+	<description>Module de création de la webapp de Funko</description>
+	<inceptionYear>2015</inceptionYear>
+	<organization>
+		<name>Thales Services</name>
+		<url>https://www.thalesgroup.com/fr</url>
+	</organization>
+
+	<!-- 
+		##################
+		###	Properties ###
+		##################
+	-->
+	<properties>
+	</properties>
+
+	<!-- 
+		####################
+		###	Dependencies ###
+		####################
+	-->
+	<dependencies>
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Funko Dependencies -->
+		<dependency>
+			<groupId>fr.rockman18.funko.server</groupId>
+			<artifactId>funko-server-engine-service</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<!-- Spring Dependencies -->
+		<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+		</dependency>
+		<!-- Apache Commons Dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<!-- Apache-Cxf Dependencies -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-extension-providers</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+		</dependency>
+		<!-- Hibernate Dependencies -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+	</dependencies>
+
+	<!-- 
+		#############
+		###	Build ###
+		#############
+	-->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warName>${project.war.name}</warName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.3.7.v20160115</version>
+				<configuration>
+					<!-- scanIntervalSeconds Optional. The pause in seconds between sweeps 
+						of the webapp to check for changes and automatically hot redeploy if any 
+						are detected. By default this is 0, which disables hot deployment scanning. 
+						A number greater than 0 enables it. -->
+					<scanIntervalSeconds>5</scanIntervalSeconds>
+					<webApp>
+						<!-- To expose webapp on choosen path -->
+						<contextPath>/${project.war.name}</contextPath>
+						<!-- To include a filesystem directory into the classpath -->
+						<extraClasspath>C:/${project.runtime.conf.directory}</extraClasspath>
+					</webApp>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

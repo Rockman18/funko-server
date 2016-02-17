@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+	xmlns:sec="http://cxf.apache.org/configuration/security" 
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+			http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd">
+		
+	<!-- web services clients -->
+	<http-conf:conduit name="http://srm.dev.cloud-omc.thales:8050/caisd-rest.*">
+		<http-conf:client ProxyServer="xxx.xxx.xxx.xxx" ProxyServerPort="0000" />
+		<http-conf:proxyAuthorization>
+			<sec:UserName>proxyUser</sec:UserName>
+			<sec:Password>proxyPassword</sec:Password>
+		</http-conf:proxyAuthorization>
+	</http-conf:conduit>
+	
+</beans>

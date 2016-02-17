@@ -1,0 +1,10 @@
+Package: [[artifactId]]
+Version: [[version]]
+Section: Web Servers
+Priority: optional
+Architecture: all
+Depends:
+Maintainer: FR-LOM-Services <fr-lom-services@thalesgroup.com>
+Description: PMS REST Server
+ This server provided REST interface allowing to browse and change PMS database
+Distribution: development

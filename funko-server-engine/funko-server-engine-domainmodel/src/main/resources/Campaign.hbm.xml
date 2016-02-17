@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.campaign.Campaign" table="campaign" optimistic-lock="version">
+        <id name="idCampaign" type="int">
+            <column name="id_campaign" />
+            <generator class="sequence">
+            	<param name="sequence">public.campaign_id_campaign_seq</param>
+            </generator>
+        </id>
+        <property name="nameCampaign" type="string">
+            <column name="name_campaign" />
+        </property>
+        <property name="statusCampaign">
+            <column name="status_campaign" length="25" />
+            <type name="org.hibernate.type.EnumType">
+            	<param name="enumClass">com.thales.services.cloudomc.pms.server.api.domainmodel.campaign.CampaignStatus</param>
+            	<param name="type">12</param>
+            	<param name="useNamed">true</param>
+            </type>
+        </property>
+        <property name="typeCampaign">
+            <column name="type_campaign" length="25" />
+            <type name="org.hibernate.type.EnumType">
+            	<param name="enumClass">com.thales.services.cloudomc.pms.server.api.domainmodel.campaign.CampaignType</param>
+            	<param name="type">12</param>
+            	<param name="useNamed">true</param>
+            </type>
+        </property>
+        <set name="customers" table="customer_campaign" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_campaign" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Customer">
+                <column name="id_cmdb_customer" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="groups" table="group_campaign" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_campaign" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Group">
+                <column name="id_uptool_group" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="campaignhistories" table="campaignhistory" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_campaign" not-null="true" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.campaign.Campaignhistory" />
+        </set>
+        <set name="patchCampaigns" table="patch_campaign" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_campaign" not-null="true" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.PatchCampaign" />
+        </set>
+    </class>
+</hibernate-mapping>

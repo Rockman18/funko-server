@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Server" table="server" optimistic-lock="version">
+        <id name="idServer" type="int">
+            <column name="id_server" />
+            <generator class="sequence">
+            	<param name="sequence">public.server_id_server_seq</param>
+            </generator>
+        </id>
+        <many-to-one name="customer" class="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Customer" fetch="select">
+            <column name="id_cmdb_customer" length="60" />
+        </many-to-one>
+        <many-to-one name="tool" class="com.thales.services.cloudomc.pms.server.api.domainmodel.Tool" fetch="select">
+            <column name="id_tool" />
+        </many-to-one>
+        <property name="nameUptool" type="string">
+            <column name="name_uptool" />
+        </property>
+        <property name="idUptool" type="string">
+            <column name="id_uptool" />
+        </property>
+        <property name="idCmdbServer" type="string">
+            <column name="id_cmdb_server" length="60" />
+        </property>
+        <property name="statusUptoolServer" type="string">
+            <column name="status_uptool_server" length="25" />
+        </property>
+        <set name="products" table="product_server" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_server" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Product">
+                <column name="id_product" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="environmentservices" table="server_se" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_server" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Environmentservice">
+                <column name="id_cmdb_se" length="60" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="groups" table="server_group" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_server" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Group">
+                <column name="id_uptool_group" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,449 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!--
+		###################
+		### Coordinates ###
+		###################
+	-->	
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.rockman18.funko.server</groupId>
+	<artifactId>funko-server-parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<!--
+		###################
+		### Information ###
+		###################
+	-->	
+	<name>Funko Server Parent</name>
+	<description>Server Rest contenant les interfaces nécessaires à l'accès aux outils en amont de PMS.</description>
+	<inceptionYear>2015</inceptionYear>
+	<organization>
+		<name>Rockman</name>
+		<url>https://www.rockman18.fr</url>
+	</organization>
+
+	<!--
+		################################
+		### Developers & Contributor ###
+		################################
+	-->
+	<developers>
+		<developer>
+			<id>Rockman18</id>
+			<name>Rockman18</name>
+			<email>wiibrickblocker@gmail.com</email>
+			<url></url>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Rockman18</name>
+			<email>wiibrickblocker@gmail.com</email>
+			<url></url>
+		</contributor>
+	</contributors>
+
+	<!--
+		#####################
+		###	Prerequisites ###
+		#####################
+	-->
+	<prerequisites>
+		<maven>3.3</maven>
+	</prerequisites>
+
+	<!--
+		###############
+		###	Modules ###
+		###############
+	-->
+	<modules>
+		<module>funko-server</module>
+		<module>funko-server-api</module>
+		<module>funko-server-engine</module>
+		<module>funko-server-webapp</module>
+	</modules>
+
+	<!--
+		###########
+		###	Scm ###
+		###########
+	-->
+	<scm>
+		<connection>scm:git:ssh://git@git.dev.cloud-omc.thales/funko/funko-server.git</connection>
+		<developerConnection>scm:git:ssh://git@git.dev.cloud-omc.thales/funko/funko-server.git</developerConnection>
+		<url>scm:git:http://git.dev.cloud-omc.thales/funko/funko-server.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<!--
+		##################
+		###	Properties ###
+		##################
+	-->
+	<properties>
+		<!-- Java -->
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Url de déploiement (nécéssaire pour Jenkins) -->
+		<project.build.snapshots.url>http://nexus.dev.cloud-omc.thales:8081/nexus/content/repositories/DTO-Snapshots</project.build.snapshots.url>
+		<project.build.releases.url>http://nexus.dev.cloud-omc.thales:8081/nexus/content/repositories/DTO-Releases</project.build.releases.url>
+
+		<!-- Variables de configuration du projet -->
+		<project.runtime.relative.directory>/rockman18/funko/server</project.runtime.relative.directory>
+		<project.runtime.install.directory>/opt${project.runtime.relative.directory}</project.runtime.install.directory>
+		<project.runtime.conf.directory>/etc${project.runtime.relative.directory}</project.runtime.conf.directory>
+		<project.runtime.log.directory>/var/log${project.runtime.relative.directory}</project.runtime.log.directory>
+
+		<!-- Configuration de la webapp -->
+		<project.war.name>funko-server-webapp</project.war.name>
+
+		<!-- Version des modules -->
+		<ch.qos.logback.version>1.1.3</ch.qos.logback.version>
+		<javax.servlet.version>3.1.0</javax.servlet.version>
+		<javax.ws.rs.version>2.0.1</javax.ws.rs.version>
+		<junit.version>4.12</junit.version>
+		<org.apache.cxf.version>3.1.3</org.apache.cxf.version>
+		<org.apache.commons.lang.version>3.4</org.apache.commons.lang.version>
+		<org.codehaus.jettison.version>1.3.7</org.codehaus.jettison.version>
+		<org.hibernate.version>4.3.8.Final</org.hibernate.version>
+		<org.jsoup.version>1.8.3</org.jsoup.version>
+		<org.postgresql.version>9.4-1204-jdbc42</org.postgresql.version>
+		<org.springframework.version>4.1.6.RELEASE</org.springframework.version>
+		<org.springframework.security>4.0.0.RELEASE</org.springframework.security>
+	</properties>
+
+	<!--
+		#####################
+		###	Distributions ###
+		#####################
+	-->
+	<distributionManagement>
+		<!-- Repository de Releases. -->
+		<repository>
+			<id>deploymentRepository</id>
+			<name>Releases Repository</name>
+			<url>${project.build.releases.url}</url>
+		</repository>
+		<!-- Repository de Snapshots. -->
+		<snapshotRepository>
+			<id>deploymentRepository</id>
+			<name>Snaphots Repository</name>
+			<url>${project.build.snapshots.url}</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<!--
+		####################
+		###	Dependencies ###
+		####################
+	-->
+	<dependencyManagement>
+		<dependencies>
+			<!-- Login Dependencies -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${ch.qos.logback.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${ch.qos.logback.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Servlet Dependencies Note : l'implémentation de la servlet est fournie 
+				par le serveur d'application. C'est pourquoi la dépendance est provided. -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Annotation Dependencies -->
+			<!-- Annotation pour les services rest(s) -->
+			<dependency>
+				<groupId>javax.ws.rs</groupId>
+				<artifactId>javax.ws.rs-api</artifactId>
+				<version>${javax.ws.rs.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Apache-Cxf Dependencies -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+				<version>${org.apache.cxf.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
+				<version>${org.apache.cxf.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-client</artifactId>
+				<version>${org.apache.cxf.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-extension-providers</artifactId>
+				<version>${org.apache.cxf.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Jettison Dependencies (Json Support) -->
+			<dependency>
+				<groupId>org.codehaus.jettison</groupId>
+				<artifactId>jettison</artifactId>
+				<version>${org.codehaus.jettison.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Spring Dependencies -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Spring Security -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${org.springframework.security}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Hibernate Dependencies -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${org.hibernate.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${org.hibernate.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.1-api</artifactId>
+				<version>1.0.0.Final</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Apache Commons Dependencies -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${org.apache.commons.lang.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- PostgreSQL Dependencies -->
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${org.postgresql.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- JSoup Dependencies -->
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>${org.jsoup.version}</version>
+				<scope>compile</scope>
+			</dependency>
+
+			<!-- Unit Test Dependencies -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- Permet l'utilisation d'une "Webapp" pendant la phase des TestU(s) -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http-jetty</artifactId>
+				<version>${org.apache.cxf.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${org.springframework.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!--
+		#############
+		###	Build ###
+		#############
+	-->
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.qmino</groupId>
+										<artifactId>
+											miredot-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.2.2,)
+										</versionRange>
+										<goals>
+											<goal>restdoc</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.3</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<phase>package</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+							<configuration>
+								<additionalparam>-Xdoclint:none</additionalparam>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.4</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>package</phase>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>com.qmino</groupId>
+					<artifactId>miredot-maven-plugin</artifactId>
+					<version>1.2.2</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>restdoc</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<!--insert configuration here -->
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<deployAtEnd>false</deployAtEnd>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

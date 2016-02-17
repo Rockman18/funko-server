@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Environmentservice" table="environmentservice" optimistic-lock="version">
+        <id name="idCmdbSe" type="string">
+            <column name="id_cmdb_se" length="60" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="servicetodelivery" class="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Servicetodelivery" fetch="select">
+            <column name="id_cmdb_sd" length="60" />
+        </many-to-one>
+        <property name="nameCmdbSe" type="string">
+            <column name="name_cmdb_se" />
+        </property>
+        <property name="environment" type="string">
+            <column name="environment" length="25" />
+        </property>
+        <set name="servers" table="server_se" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_cmdb_se" length="60" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Server">
+                <column name="id_server" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

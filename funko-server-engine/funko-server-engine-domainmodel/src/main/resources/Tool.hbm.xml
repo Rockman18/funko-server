@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.Tool" table="tool" optimistic-lock="version">
+        <id name="idTool" type="int">
+            <column name="id_tool" />
+            <generator class="sequence">
+            	<param name="sequence">public.tool_id_tool_seq</param>
+            </generator>
+        </id>
+        <property name="nameTool" type="string">
+            <column name="name_tool" />
+        </property>
+        <property name="platformTool" type="string">
+            <column name="platform_tool" length="25" />
+        </property>
+        <set name="patches" table="patch" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_tool" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Patch" />
+        </set>
+        <set name="groups" table="group" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_tool" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Group" />
+        </set>
+        <set name="products" table="product" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_tool" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Product" />
+        </set>
+        <set name="servers" table="server" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_tool" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Server" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:annotation-config />
+
+	<!-- <tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="pmsEntityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="jpaProperties" ref="pmsJpaProperties" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>Campaign.hbm.xml</value>
+				<value>Campaignhistory.hbm.xml</value>
+				<value>Customer.hbm.xml</value>
+				<value>Environmentservice.hbm.xml</value>
+				<value>Group.hbm.xml</value>
+				<value>Patch.hbm.xml</value>
+				<value>PatchCampaign.hbm.xml</value>
+				<value>PatchGroup.hbm.xml</value>
+				<value>Product.hbm.xml</value>
+				<value>Server.hbm.xml</value>
+				<value>Servicetodelivery.hbm.xml</value>
+				<value>Tool.hbm.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="pmsDataSource" />
+	</bean> 
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="pmsEntityManagerFactory" />
+	</bean>
+
+	<bean id="txInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributeSource">
+			<bean
+				class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
+		<property name="transactionInterceptor" ref="txInterceptor" />
+	</bean> -->
+
+</beans>

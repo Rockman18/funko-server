@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Customer" table="customer" optimistic-lock="version">
+        <id name="idCmdbCustomer" type="string">
+            <column name="id_cmdb_customer" length="60" />
+            <generator class="assigned" />
+        </id>
+        <property name="nameCmdbCustomer" type="string">
+            <column name="name_cmdb_customer" />
+        </property>
+        <set name="campaigns" table="customer_campaign" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_cmdb_customer" length="60" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.campaign.Campaign">
+                <column name="id_campaign" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="servers" table="server" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_cmdb_customer" length="60" />
+            </key>
+            <one-to-many class="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Server" />
+        </set>
+    </class>
+</hibernate-mapping>

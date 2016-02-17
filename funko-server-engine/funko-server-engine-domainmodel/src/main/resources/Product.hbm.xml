@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21 oct. 2015 16:04:04 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Product" table="product" optimistic-lock="version">
+        <id name="idProduct" type="int">
+            <column name="id_product" />
+            <generator class="sequence">
+            	<param name="sequence">public.product_id_product_seq</param>
+            </generator>        </id>
+        <many-to-one name="tool" class="com.thales.services.cloudomc.pms.server.api.domainmodel.Tool" fetch="select">
+            <column name="id_tool" />
+        </many-to-one>
+        <property name="nameUptool" type="string">
+            <column name="name_uptool" />
+        </property>
+        <property name="idUptool" type="string">
+            <column name="id_uptool" />
+        </property>
+        <property name="idCmdbProduct" type="string">
+            <column name="id_cmdb_product" length="60" />
+        </property>
+        <set name="patches" table="product_patch" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_product" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.patch.Patch">
+                <column name="id_patch" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="servers" table="product_server" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_product" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.thales.services.cloudomc.pms.server.api.domainmodel.group.Server">
+                <column name="id_server" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

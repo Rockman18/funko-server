@@ -1,0 +1,247 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!--
+		###################
+		### Coordinates ###
+		###################
+	-->
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>funko-server</artifactId>
+	<packaging>deb</packaging>
+	<parent>
+		<groupId>fr.rockman18.funko.server</groupId>
+		<artifactId>funko-server-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<!--
+		####################
+		### Informations ###
+		####################
+	-->
+	<name>Funko Server Packaging</name>
+	<description>Module de création du package de Funko</description>
+	<inceptionYear>2015</inceptionYear>
+	<organization>
+		<name>Thales Services</name>
+		<url>https://www.thalesgroup.com/fr</url>
+	</organization>
+
+	<!-- 
+		##################
+		###	Properties ###
+		##################
+	-->
+	<properties>
+		<!-- Directories used during the build -->
+		<project.build.package.standard.directory>${project.build.directory}/standardFiles</project.build.package.standard.directory>
+		<project.build.package.conf.directory>${project.build.directory}/confFiles</project.build.package.conf.directory>
+		<project.build.unpack.directory>${project.build.directory}/unpack</project.build.unpack.directory>
+
+		<!-- Properties used to create the packages -->
+		<package.ownership.user>useromc</package.ownership.user>
+		<package.ownership.group>useromc</package.ownership.group>
+		<package.installation.prefix />
+	</properties>
+
+	<!-- 
+		####################
+		###	Dependencies ###
+		####################
+	-->
+	<dependencies>
+		<!-- Funko Dependencies -->
+		<dependency>
+			<groupId>fr.rockman18.funko.server</groupId>
+			<artifactId>funko-server-webapp</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+	</dependencies>
+
+	<!-- 
+		#############
+		###	Build ###
+		#############
+	-->
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+				<version>1.4</version>
+			</extension>
+		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<id>copy-war</id>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>fr.rockman18.funko.server</groupId>
+									<artifactId>funko-server-webapp</artifactId>
+									<type>war</type>
+									<destFileName>funko-server-webapp.war</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.package.standard.directory}${project.runtime.install.directory}/webapps</outputDirectory>
+							<stripVersion>true</stripVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<phase>prepare-package</phase>
+						<id>unpack-war</id>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>fr.rockman18.funko.server</groupId>
+									<artifactId>funko-server-webapp</artifactId>
+									<type>war</type>									
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.unpack.directory}</outputDirectory>							
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources-etc</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.package.conf.directory}${project.runtime.conf.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>true</filtering>
+									<excludes>
+										<exclude>funko-server-webapp.xml</exclude>
+									</excludes>
+								</resource>
+							</resources>							
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources-webapps</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.package.standard.directory}${project.runtime.install.directory}/webapps</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>funko-server-webapp.xml</include>
+									</includes>
+								</resource>
+							</resources>							
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>99-copy-logback</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target name="copy-logback-to-conf-directory">
+								<copy file="${project.build.unpack.directory}/WEB-INF/classes/logback.xml" tofile="${project.build.package.conf.directory}${project.runtime.conf.directory}/logback.xml" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>jdeb</artifactId>
+				<groupId>org.vafer</groupId>
+				<version>1.4</version>
+				<configuration>
+					<snapshotExpand>true</snapshotExpand>
+					<signPackage>false</signPackage>
+					<dataSet>
+						<data>
+							<src>${project.build.package.standard.directory}</src>
+							<type>directory</type>
+							<excludes>**/*.sh</excludes>
+							<mapper>
+								<type>perm</type>
+								<user>${package.ownership.user}</user>
+								<group>${package.ownership.group}</group>
+								<prefix>${package.installation.prefix}</prefix>
+								<filemode>644</filemode>
+							</mapper>
+						</data>
+						<data>
+							<src>${project.build.package.standard.directory}</src>
+							<type>directory</type>
+							<includes>**/*.sh</includes>
+							<mapper>
+								<type>perm</type>
+								<user>${package.ownership.user}</user>
+								<group>${package.ownership.group}</group>
+								<prefix>${package.installation.prefix}</prefix>
+								<filemode>755</filemode>
+							</mapper>
+						</data>
+						<data>
+							<src>${project.build.package.conf.directory}</src>
+							<type>directory</type>
+							<missingSrc>ignore</missingSrc>
+							<conffile>true</conffile>
+							<mapper>
+								<type>perm</type>
+								<user>${package.ownership.user}</user>
+								<group>${package.ownership.group}</group>
+								<prefix>${package.installation.prefix}</prefix>
+							</mapper>
+						</data>
+						<data>
+							<type>template</type>
+							<paths>
+								<!-- 
+									On ne peut pas utiliser ${project.runtime.log.directory} car 
+									il ne faut pas de / au debut 
+								-->
+								<path>${project.runtime.log.directory}</path>
+							</paths>
+							<mapper>
+								<type>perm</type>
+								<user>${package.ownership.user}</user>
+								<group>${package.ownership.group}</group>
+								<filemode>755</filemode>
+							</mapper>
+						</data>
+					</dataSet>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,69 @@
+#!/bin/bash -u
+
+WEBAPP_FILE="[[project.runtime.install.directory]]/webapps/pms-server-webapp.war"
+CONTEXT_FILE="[[project.runtime.install.directory]]/webapps/pms-server-webapp.xml"
+JETTY_START_SCRIPT="/etc/init.d/jetty"
+
+
+
+# Search jetty home directory. We use the script /etc/init.d/jetty.
+#
+# @return 0 if the java command has been found
+
+setJettyHome() {
+	if [ -n "${JETTY_HOME:-}" ]; then
+		return 0
+	fi
+	if [ ! -x "$JETTY_START_SCRIPT" ]; then
+		echo "Warning: $JETTY_START_SCRIPT not a file" 1>&2
+		echo "Warning: unable to find jetty installation directory" 1>&2
+		return 1
+	fi
+	JETTY_HOME=$($JETTY_START_SCRIPT status | sed -n 's/^JETTY_HOME *= *//p')
+	if [ -z "$JETTY_HOME" ]; then
+		echo "Warning: Unable to find jetty installation directory" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+
+if [ "${1:-}" = "configure" ]; then
+	LINK_CREATED=1
+	LINK_CONTEXT=1
+	setJettyHome
+	if [ $? -eq 0 ]; then
+		if [ -d "$JETTY_HOME/webapps" ]; then
+			if [ ! -f "$JETTY_HOME/webapps/$(basename $WEBAPP_FILE)" ]; then
+				echo "Adding $(basename $WEBAPP_FILE) to $JETTY_HOME/webapps"
+				ln -sf "$WEBAPP_FILE" "$JETTY_HOME/webapps/"
+				LINK_CREATED=$?
+			else
+				LINK_CREATED=0
+			fi
+		else
+			echo "Warning: $JETTY_HOME/webapps not a directory" 1>&2
+		fi
+		if [ -d "$JETTY_HOME/webapps" ]; then
+			if [ ! -f "$JETTY_HOME/webapps/$(basename $CONTEXT_FILE)" ]; then
+				echo "Adding $(basename $CONTEXT_FILE) to $JETTY_HOME/webapps"
+				ln -sf "$CONTEXT_FILE" "$JETTY_HOME/webapps/"
+				LINK_CONTEXT=$?
+			else
+				LINK_CONTEXT=0
+			fi
+		else
+			echo "Warning: $JETTY_HOME/webapps not a directory" 1>&2
+		fi
+	fi
+	if [ $LINK_CREATED -ne 0 ]; then
+		echo "Warning: You have to create the symbolic link from Jetty webapps directory to $WEBAPP_FILE" 1>&2
+	fi
+	if [ $LINK_CONTEXT -ne 0 ]; then
+		echo "Warning: You have to create the symbolic link from Jetty contexts directory to $CONTEXT_FILE" 1>&2
+	fi
+	
+	# We don't want to fail when it is not possible to create the symbolic link
+	exit 0
+fi
+
