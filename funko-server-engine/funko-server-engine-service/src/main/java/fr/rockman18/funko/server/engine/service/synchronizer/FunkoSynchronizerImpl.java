@@ -36,9 +36,9 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
     Pattern pattern = Pattern.compile( "^(\\#([0-9]+)\n<br>)?" +
 			"(Released ([a-zA-Z ]*[0-9]{4})\n<br>)?" +
 			"(Excl. to (.*)\n<br>)?" +
-			"(Edition Size: ([0-9,]+)\n<br>)?" +
+			"(Edition Size: ([0-9,]+)\n<br>)?" + // Limited
 			"(Due ([a-zA-Z ]*[0-9]{4})\n<br>)?" +
-			"(Rarity: 1/([0-9]+)\n<br>)?" +
+			"(Rarity: (1/[0-9]+)\n<br>)?" +
 			"(((V|v)aulted)\n<br>)?" +
 			"(((R|r)etired)\n<br>)?");
 
@@ -93,7 +93,7 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 		logger.debug("10 Due : {}", matcher.group(10));
 		logger.debug("12 Rarity : {}", matcher.group(12));
 		logger.debug("14 Vaulted : {}", matcher.group(14));
-		logger.debug("16 Retired : {}", matcher.group(16));
+		logger.debug("17 Retired : {}", matcher.group(17));
 		
 	    } else {
 		logger.debug("******************************");
