@@ -18,6 +18,7 @@ public class FunkoProduct extends FunkoObject {
     private int number;
     private int variantMask;
     private String releaseDate;
+    private Boolean released;
     private String exclusiveRetailer;
     private int editionSize;
     private float estimatedQuotation;
@@ -32,13 +33,15 @@ public class FunkoProduct extends FunkoObject {
 	super(id);
     }
 
-    public FunkoProduct(int id, String label, String url, String img, int number, int variantMask, String releaseDate,
-	    String exclusiveRetailer, int editionSize, float estimatedQuotation, FunkoLine line,
-	    FunkoFranchise franchise) {
+    public FunkoProduct(int id, String label, String url, String img,
+	    int number, int variantMask, String releaseDate, Boolean released,
+	    String exclusiveRetailer, int editionSize,
+	    float estimatedQuotation, FunkoLine line, FunkoFranchise franchise) {
 	super(id, label, url, img);
 	this.number = number;
 	this.variantMask = variantMask;
 	this.setReleaseDate(releaseDate);
+	this.setReleased(released);
 	this.exclusiveRetailer = exclusiveRetailer;
 	this.editionSize = editionSize;
 	this.estimatedQuotation = estimatedQuotation;
@@ -68,6 +71,14 @@ public class FunkoProduct extends FunkoObject {
 
     public void setReleaseDate(String releaseDate) {
 	this.releaseDate = releaseDate;
+    }
+
+    public Boolean getReleased() {
+	return released;
+    }
+
+    public void setReleased(Boolean released) {
+	this.released = released;
     }
 
     public String getExclusiveRetailer() {

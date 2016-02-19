@@ -17,15 +17,20 @@ import fr.rockman18.funko.server.api.domainmodel.product.FunkoProduct;
 import fr.rockman18.funko.server.engine.service.AbstractBaseInternalFunkoService;
 import fr.rockman18.funko.server.engine.service.HtmlParser;
 
-public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService implements FunkoSynchronizer {
+public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService
+	implements FunkoSynchronizer {
 
     protected HtmlParser htmlParser;
     protected FunkoObject parent;
 
-    Pattern pattern = Pattern
-	    .compile("^(\\#([0-9]+) *\n<br>)?" + "(Released ([a-zA-Z ]*[0-9]{4}) *\n<br>)?" + "(Excl. to (.*) *\n<br>)?"
-		    + "(Edition Size: ([0-9,]+|[Ll]imited) *\n<br>)?" + "(Due ([a-zA-Z ]*[0-9]{4}) *\n<br>)?"
-		    + "(Rarity: (1[/:][0-9]+) *\n<br>)?" + "(([vV]aulted) *\n<br>)?" + "(([rR]etired) *\n<br>)?");
+    Pattern pattern = Pattern.compile("^(\\#([0-9]+) *\n<br>)?"
+	    + "(Released ([a-zA-Z ]*[0-9]{4}) *\n<br>)?"
+	    + "(Excl. to (.*) *\n<br>)?"
+	    + "(Edition Size: ([0-9,]+|[Ll]imited) *\n<br>)?"
+	    + "(Due ([a-zA-Z ]*[0-9]{4}) *\n<br>)?"
+	    + "(Rarity: (1[/:][0-9]+) *\n<br>)?"
+	    + "(([vV]aulted) *\n<br>)?"
+	    + "(([rR]etired) *\n<br>)?");
 
     public void setHtmlParser(HtmlParser htmlParser) {
 	this.htmlParser = htmlParser;
@@ -46,28 +51,36 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 	    sfo.addAll(discoverFunkoLines());
 	    sfo.addAll(discoverFunkoFranchises());
 	} else if (parent instanceof FunkoLine) {
-	    logger.info("Discovering products from line [{}]", ((FunkoLine) parent).getUrl());
+	    logger.info("Discovering products from line [{}]",
+		    ((FunkoLine) parent).getUrl());
 	    sfo.addAll(discoverProducts((FunkoLine) parent, 1));
 	} else if (parent instanceof FunkoFranchise) {
 	    logger.warn("Discovering Product from Franchise is not yet implemented.");
 	} else {
-	    logger.error("What is it ???");
+	    logger.error("What kind of discovering is it ???");
 	}
 	endTimeMillis = System.currentTimeMillis();
-	logger.info("Ending Thread. Processing time : {} ms", endTimeMillis - startTimeMillis);
+	logger.info("Ending Thread. Processing time : {} ms", endTimeMillis
+		- startTimeMillis);
 	return sfo;
     }
 
     protected void populateProduct(FunkoProduct funkoProduct, Element divItemRow) {
-	if (!divItemRow.tagName().equals("div") || !divItemRow.hasClass("itemrow")) {
+	if (!divItemRow.tagName().equals("div")
+		|| !divItemRow.hasClass("itemrow")) {
 	    logger.error("Element sent is not a <div class=\"itemrow\">");
 	} else {
+	    logger.debug("<----- New Product ----->");
+
 	    Element aName = divItemRow.select("a").first();
-	    Element textContainer = divItemRow.select("div.textcontainer").first();
+	    Element textContainer = divItemRow.select("div.textcontainer")
+		    .first();
+	    logger.debug(textContainer.html());
+
 	    funkoProduct.setLabel(aName.text());
 	    funkoProduct.setUrl(aName.attr("abs:href"));
-	    logger.debug(funkoProduct.toString());
-	    logger.debug(textContainer.html());
+	    funkoProduct.setId(Integer.parseInt(divItemRow.id().substring(1)));
+	    logger.debug("Id : {}", funkoProduct.getId());
 	    Matcher matcher = pattern.matcher(textContainer.html());
 	    if (matcher.find()) {
 		if (matcher.group(2) != null) {
@@ -76,22 +89,28 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 		}
 		if (matcher.group(4) != null) {
 		    funkoProduct.setReleaseDate(matcher.group(4));
+		    funkoProduct.setReleased(true);
 		    logger.debug("Released : {}", funkoProduct.getReleaseDate());
 		}
 		if (matcher.group(6) != null) {
 		    funkoProduct.setExclusiveRetailer(matcher.group(6));
-		    logger.debug("Excl. to : {}", funkoProduct.getExclusiveRetailer());
+		    logger.debug("Excl. to : {}",
+			    funkoProduct.getExclusiveRetailer());
 		}
 		if (matcher.group(8) != null) {
 		    try {
-			funkoProduct.setEditionSize(Integer.parseInt(matcher.group(8)));
+			funkoProduct.setEditionSize(Integer.parseInt(matcher
+				.group(8)));
 		    } catch (NumberFormatException e) {
 			funkoProduct.setEditionSize(-1);
 		    }
-		    logger.debug("Edition size : {}", funkoProduct.getEditionSize());
+		    logger.debug("Edition size : {}",
+			    funkoProduct.getEditionSize());
 		}
 		if (matcher.group(10) != null) {
-		    logger.debug("Due : {}", matcher.group(10));
+		    funkoProduct.setReleaseDate(matcher.group(10));
+		    funkoProduct.setReleased(false);
+		    logger.debug("Due : {}", funkoProduct.getReleaseDate());
 		}
 		if (matcher.group(12) != null) {
 		    logger.debug("Rarity : {}", matcher.group(12));
@@ -103,19 +122,20 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 		    logger.debug("Retired : {}", matcher.group(16));
 		}
 	    } else {
+		logger.warn("Can't extract data for this product.");
 		logger.debug("******************************");
 		logger.debug("******************************");
 		logger.debug(textContainer.html());
 		logger.debug("******************************");
 		logger.debug("******************************");
 	    }
-
-	    logger.debug(divItemRow.id());
+	    logger.info(funkoProduct.toString());
 	}
     }
 
     protected void populateCategory(FunkoLine funkoLine, Element divCatRow) {
-	if (!divCatRow.tagName().equals("div") || !divCatRow.className().equals("catrow")) {
+	if (!divCatRow.tagName().equals("div")
+		|| !divCatRow.className().equals("catrow")) {
 	    logger.error("Element sent is not a <div class=\"catrow\">");
 	} else {
 	    Element aName = divCatRow.select("a").first();
@@ -168,7 +188,8 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 		    for (Element link : div.select("a")) {
 			FunkoLine line = new FunkoLine();
 			line.setImg(link.select("img").attr("src"));
-			line.setUrl(link.attr("abs:href").replace("/1/", "/%d/"));
+			line.setUrl(link.attr("abs:href")
+				.replace("/1/", "/%d/"));
 			logger.info("[New Line] {}", line.getUrl());
 			lines.add(line);
 		    }
@@ -186,7 +207,8 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 	logger.info("Discovering Franchises");
 	Document doc = null;
 	try {
-	    doc = htmlParser.parseUrl("http://www.poppriceguide.com/guide/franchise.php");
+	    doc = htmlParser
+		    .parseUrl("http://www.poppriceguide.com/guide/franchise.php");
 	    for (Element element : doc.getElementsByClass("col-33")) {
 		FunkoFranchise franchise = new FunkoFranchise();
 		franchise.setLabel(element.text());
@@ -218,11 +240,13 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 		    line.setPage(1);
 		}
 	    }
-	    logger.info("Discovering products for line [{}] page [{}]", line.toString(), page);
+	    logger.info("Discovering products for line [{}] page [{}]",
+		    line.toString(), page);
 
 	    Elements subLines = doc.select("div.catrow");
 	    if (subLines.size() > 0) {
-		logger.info("{} subLines detected for line [{}]", subLines.size(), line.toString());
+		logger.info("{} subLines detected for line [{}]",
+			subLines.size(), line.toString());
 		for (Element divCatRow : subLines) {
 		    FunkoLine subLine = new FunkoLine();
 		    subLine.setParentLine(line);
@@ -245,7 +269,8 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 	    logger.error(e.getMessage());
 	}
 	if (page == 1) {
-	    logger.info("{} products discovered for line [{}]", products.size(), line.toString());
+	    logger.info("{} products discovered for line [{}]",
+		    products.size(), line.toString());
 	}
 	return products;
     }
