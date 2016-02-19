@@ -1,0 +1,23 @@
+target/
+.settings/
+.prefs
+.classpath
+.project
+.launch
+*.log
+# Ignore tous les autres .gitignore générés par Eclipse.
+# Néanmoins ce fichier doit être présent à la racine du projet.
+.gitignore
+# Pour eviter de commiter "accidentellement" un fichier binaire. La liste
+# est succeptible d'evoluer en fonction des accidents recenses...
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.pdf
+*.zip
+*.tar
+*.gz
+*.tgz
+*.7z
+*.launch
