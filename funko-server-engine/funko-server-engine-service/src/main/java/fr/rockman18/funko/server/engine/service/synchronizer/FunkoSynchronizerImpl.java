@@ -21,26 +21,11 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 
     protected HtmlParser htmlParser;
     protected FunkoObject parent;
-    
-    /*
-    Pattern pattern = Pattern.compile( "^((<br>)?\\#([0-9]+))?(\n|\r)*" + 
-	    				"((<br>)?Released ([a-zA-Z ]*[0-9]{4}))?(\n|\r)*" +
-	    				"((<br>)?Excl. to (.*))?(\n|\r)*" +
-	    				"((<br>)?Edition Size: ([0-9,]+))?(\n|\r)*" +
-	    				"((<br>)?Due ([a-zA-Z ]*[0-9]{4}))?(\n|\r)*" +
-	    				"((<br>)?Rarity: 1/([0-9]+))?(\n|\r)*" +
-	    				"((<br>)?([vV]aulted))?(\n|\r)*" +
-	    				"((<br>)?([rR]etired))?(\n|\r)*");
-	*/
 
-    Pattern pattern = Pattern.compile( "^(\\#([0-9]+)\n<br>)?" +
-			"(Released ([a-zA-Z ]*[0-9]{4})\n<br>)?" +
-			"(Excl. to (.*)\n<br>)?" +
-			"(Edition Size: ([0-9,]+)\n<br>)?" + // Limited ou ?
-			"(Due ([a-zA-Z ]*[0-9]{4})\n<br>)?" +
-			"(Rarity: (1/[0-9]+)\n<br>)?" + // ou :
-			"(([vV]aulted)\n<br>)?" +
-			"(([rR]etired)\n<br>)?");
+    Pattern pattern = Pattern
+	    .compile("^(\\#([0-9]+) *\n<br>)?" + "(Released ([a-zA-Z ]*[0-9]{4}) *\n<br>)?" + "(Excl. to (.*) *\n<br>)?"
+		    + "(Edition Size: ([0-9,]+|[Ll]imited) *\n<br>)?" + "(Due ([a-zA-Z ]*[0-9]{4}) *\n<br>)?"
+		    + "(Rarity: (1[/:][0-9]+) *\n<br>)?" + "(([vV]aulted) *\n<br>)?" + "(([rR]etired) *\n<br>)?");
 
     public void setHtmlParser(HtmlParser htmlParser) {
 	this.htmlParser = htmlParser;
@@ -84,17 +69,39 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 	    logger.debug(funkoProduct.toString());
 	    logger.debug(textContainer.html());
 	    Matcher matcher = pattern.matcher(textContainer.html());
-	    if (matcher.find())
-	    {
-		logger.debug("2 # : {}", matcher.group(2));
-		logger.debug("4 Released : {}", matcher.group(4));
-		logger.debug("6 Excl. to : {}", matcher.group(6));
-		logger.debug("8 Edition size : {}", matcher.group(8));
-		logger.debug("10 Due : {}", matcher.group(10));
-		logger.debug("12 Rarity : {}", matcher.group(12));
-		logger.debug("14 Vaulted : {}", matcher.group(14));
-		logger.debug("16 Retired : {}", matcher.group(16));
-		
+	    if (matcher.find()) {
+		if (matcher.group(2) != null) {
+		    funkoProduct.setNumber(Integer.parseInt(matcher.group(2)));
+		    logger.debug("# : {}", funkoProduct.getNumber());
+		}
+		if (matcher.group(4) != null) {
+		    funkoProduct.setReleaseDate(matcher.group(4));
+		    logger.debug("Released : {}", funkoProduct.getReleaseDate());
+		}
+		if (matcher.group(6) != null) {
+		    funkoProduct.setExclusiveRetailer(matcher.group(6));
+		    logger.debug("Excl. to : {}", funkoProduct.getExclusiveRetailer());
+		}
+		if (matcher.group(8) != null) {
+		    try {
+			funkoProduct.setEditionSize(Integer.parseInt(matcher.group(8)));
+		    } catch (NumberFormatException e) {
+			funkoProduct.setEditionSize(-1);
+		    }
+		    logger.debug("Edition size : {}", funkoProduct.getEditionSize());
+		}
+		if (matcher.group(10) != null) {
+		    logger.debug("Due : {}", matcher.group(10));
+		}
+		if (matcher.group(12) != null) {
+		    logger.debug("Rarity : {}", matcher.group(12));
+		}
+		if (matcher.group(14) != null) {
+		    logger.debug("Vaulted : {}", matcher.group(14));
+		}
+		if (matcher.group(16) != null) {
+		    logger.debug("Retired : {}", matcher.group(16));
+		}
 	    } else {
 		logger.debug("******************************");
 		logger.debug("******************************");

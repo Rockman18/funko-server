@@ -17,6 +17,7 @@ public class FunkoProduct extends FunkoObject {
     private static final long serialVersionUID = 4795387256238654686L;
     private int number;
     private int variantMask;
+    private String releaseDate;
     private String exclusiveRetailer;
     private int editionSize;
     private float estimatedQuotation;
@@ -31,12 +32,13 @@ public class FunkoProduct extends FunkoObject {
 	super(id);
     }
 
-    public FunkoProduct(int id, String label, String url, String img, int number, int variantMask,
+    public FunkoProduct(int id, String label, String url, String img, int number, int variantMask, String releaseDate,
 	    String exclusiveRetailer, int editionSize, float estimatedQuotation, FunkoLine line,
 	    FunkoFranchise franchise) {
 	super(id, label, url, img);
 	this.number = number;
 	this.variantMask = variantMask;
+	this.setReleaseDate(releaseDate);
 	this.exclusiveRetailer = exclusiveRetailer;
 	this.editionSize = editionSize;
 	this.estimatedQuotation = estimatedQuotation;
@@ -58,6 +60,14 @@ public class FunkoProduct extends FunkoObject {
 
     public void setVariantMask(int variantMask) {
 	this.variantMask = variantMask;
+    }
+
+    public String getReleaseDate() {
+	return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+	this.releaseDate = releaseDate;
     }
 
     public String getExclusiveRetailer() {
