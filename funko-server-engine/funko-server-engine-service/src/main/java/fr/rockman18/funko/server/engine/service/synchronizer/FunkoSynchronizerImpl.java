@@ -66,8 +66,10 @@ public class FunkoSynchronizerImpl extends AbstractBaseInternalFunkoService impl
 
 	    Element aName = divItemRow.select("a").first();
 	    Element img = divItemRow.select("img.itemlistimg-ext").first();
+	    Element quotation = divItemRow.getElementsByAttributeValue("style", "position: relative; bottom: 19px; z-index: 1; margin-bottom: -25px; padding: 5px; background-color: #d6fed8; color: green; font-weight: bold; font-size: 20px; opacity: 0.8; text-align: center; border: 1px solid green; border-radius: 8px;").first();
 	    Element textContainer = divItemRow.select("div.textcontainer").first();
 	    logger.debug(textContainer.html());
+	    logger.debug(quotation.text());
 
 	    funkoProduct.setId(Integer.parseInt(divItemRow.id().substring(1)));
 	    logger.debug("Id : {}", funkoProduct.getId());
